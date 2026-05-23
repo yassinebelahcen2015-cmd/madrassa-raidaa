@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Icon Generator</title></head>
+<body style="background:#f0f4f0;font-family:Cairo,Arial,sans-serif;padding:30px;text-align:center">
+<h2>أيقونات التطبيق — المدرسة الرائدة</h2>
+<p style="color:#555;margin-bottom:20px">اضغط زر اليمين على كل أيقونة ثم "حفظ الصورة" بالاسم المذكور</p>
+
+<div style="display:flex;gap:30px;justify-content:center;flex-wrap:wrap">
+
+  <!-- 192x192 -->
+  <div>
+    <p style="font-weight:700;margin-bottom:8px">icon-192.png (192×192)</p>
+    <canvas id="c192" width="192" height="192" style="border-radius:24px;box-shadow:0 4px 20px rgba(0,0,0,0.2)"></canvas>
+  </div>
+
+  <!-- 512x512 -->
+  <div>
+    <p style="font-weight:700;margin-bottom:8px">icon-512.png (512×512)</p>
+    <canvas id="c512" width="512" height="512" style="border-radius:64px;box-shadow:0 4px 20px rgba(0,0,0,0.2);width:192px;height:192px"></canvas>
+  </div>
+
+</div>
+
+<script>
+function drawIcon(canvasId, size) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  const r = size * 0.13;
+
+  // Background gradient
+  const grad = ctx.createLinearGradient(0, 0, size, size);
+  grad.addColorStop(0, '#085041');
+  grad.addColorStop(1, '#1D9E75');
+
+  // Rounded rect
+  ctx.beginPath();
+  ctx.moveTo(r, 0);
+  ctx.lineTo(size - r, 0);
+  ctx.quadraticCurveTo(size, 0, size, r);
+  ctx.lineTo(size, size - r);
+  ctx.quadraticCurveTo(size, size, size - r, size);
+  ctx.lineTo(r, size);
+  ctx.quadraticCurveTo(0, size, 0, size - r);
+  ctx.lineTo(0, r);
+  ctx.quadraticCurveTo(0, 0, r, 0);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Star/graduation emoji
+  ctx.font = `${size * 0.42}px serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🎓', size / 2, size * 0.44);
+
+  // Arabic text
+  ctx.font = `bold ${size * 0.10}px Cairo, Arial`;
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.fillText('المدرسة الرائدة', size / 2, size * 0.80);
+
+  ctx.font = `${size * 0.07}px Cairo, Arial`;
+  ctx.fillStyle = 'rgba(255,255,255,0.70)';
+  ctx.fillText('التعليم الصريح', size / 2, size * 0.90);
+}
+
+drawIcon('c192', 192);
+drawIcon('c512', 512);
+
+// Auto-download buttons
+function addDownload(canvasId, filename) {
+  const canvas = document.getElementById(canvasId);
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = canvas.toDataURL('image/png');
+  link.textContent = '⬇ تحميل ' + filename;
+  link.style.cssText = 'display:block;margin:10px auto;padding:8px 18px;background:#1D9E75;color:#fff;border-radius:8px;text-decoration:none;font-weight:700;width:fit-content';
+  canvas.parentNode.appendChild(link);
+}
+
+addDownload('c192', 'icon-192.png');
+addDownload('c512', 'icon-512.png');
+</script>
+</body>
+</html>

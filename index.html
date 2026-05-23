@@ -10,6 +10,17 @@
 <!-- Google AdSense — استبدل YOUR_PUBLISHER_ID بمعرفك الفعلي -->
 <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID" crossorigin="anonymous"></script> -->
 
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1D9E75">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="المدرسة الرائدة">
+<meta name="description" content="منصة التعليم الصريح للمدرسة الرائدة بالمغرب — دروس PPT وخرائط ذهنية PDF لجميع المستويات">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+
 <style>
 /* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -406,7 +417,7 @@ body {
   <div id="s-home" class="screen active">
     <div class="topbar">
       <div class="topbar-actions">
-        <button class="icon-btn" onclick="nav('s-news')" title="المستجدات">
+        <button class="icon-btn" id="install-btn" onclick="installApp()" title="تثبيت التطبيق" style="display:none;background:rgba(255,255,255,0.3);gap:4px;width:auto;padding:0 10px;border-radius:16px;font-size:12px;font-weight:700"><i class="ti ti-download"></i> تثبيت</button><button class="icon-btn" onclick="nav('s-news')" title="المستجدات">
           <i class="ti ti-news"></i>
         </button>
         <button class="icon-btn" onclick="nav('s-profile')" title="حسابي">
@@ -1017,6 +1028,36 @@ function filterHome(type, el) {
   el.classList.add('active');
   if (type === 'ppt' || type === 'pdf' || type === 'new') showToast('عرض محتوى: ' + el.textContent.trim());
 }
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.getElementById('install-btn');
+  if (btn) btn.style.display = 'flex';
+});
+
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choice => {
+      if (choice.outcome === 'accepted') showToast('✅ تم تثبيت التطبيق بنجاح!');
+      deferredPrompt = null;
+      const btn = document.getElementById('install-btn');
+      if (btn) btn.style.display = 'none';
+    });
+  }
+}
+
+window.addEventListener('appinstalled', () => {
+  showToast('🎉 تم تثبيت المدرسة الرائدة على هاتفك!');
+});
 </script>
 </body>
 </html>
